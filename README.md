@@ -2,7 +2,7 @@
 
 Forked from https://github.com/facebookresearch/CutLER
 
-Minor edits for running experiments. Original Citation:
+Minor edits for running experiments. Original Citations:
 
 ```
 @inproceedings{wang2023cut,
