@@ -12,10 +12,16 @@ MAX_ITER = 10
 POS_W = 7 
 POS_XY_STD = 3
 Bi_W = 10
-Bi_XY_STD = 50 
+Bi_XY_STD = 50
 Bi_RGB_STD = 5
 
-def densecrf(image, mask):
+def densecrf(image, mask, bi_xy_std=None, bi_rgb_std=None):
+    # Allow optional bilateral CRF parameter overrides from downstream callers.
+    if bi_xy_std is None:
+        bi_xy_std = Bi_XY_STD
+    if bi_rgb_std is None:
+        bi_rgb_std = Bi_RGB_STD
+
     h, w = mask.shape
     mask = mask.reshape(1, h, w)
     fg = mask.astype(float) 
@@ -38,7 +44,7 @@ def densecrf(image, mask):
     d = dcrf.DenseCRF2D(w, h, c)
     d.setUnaryEnergy(U)
     d.addPairwiseGaussian(sxy=POS_XY_STD, compat=POS_W)
-    d.addPairwiseBilateral(sxy=Bi_XY_STD, srgb=Bi_RGB_STD, rgbim=image, compat=Bi_W)
+    d.addPairwiseBilateral(sxy=bi_xy_std, srgb=bi_rgb_std, rgbim=image, compat=Bi_W)
 
     Q = d.inference(MAX_ITER)
     Q = np.array(Q).reshape((c, h, w))
